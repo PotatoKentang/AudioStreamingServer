@@ -200,6 +200,7 @@ func main() {
 
 		w.Header().Set("Content-Type", "audio/aac")
 		w.Header().Set("Connection", "keep-alive")
+		w.Header().Set("Access-Control-Allow-Origin", "*") // Allow CORS from any origin
 
 		flusher, ok := w.(http.Flusher)
 		if !ok {
@@ -222,6 +223,12 @@ func main() {
 			flusher.Flush()
 			clear(connection.buffer)
 		}
+	})
+
+	// Enable CORS for all routes
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "*") // Allow CORS from any origin
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type") // Allow specific headers
 	})
 
 	log.Println(fmt.Sprintf("Listening on port %s...", port))
